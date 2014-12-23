@@ -1,0 +1,34 @@
+idmToExamples<-function(info,data,meta){
+  ntrials<-length(data)
+  nvoxels<-dim(data[[1]])[2]
+  trials<-unlist(info["cond",])
+  uniqueConds<-sort(unique(trials))
+  nconds<-length(uniqueConds)
+  trialLenCond<-matrix(0,ntrials,nconds)+Inf
+  ntrialsCond<-matrix(0,1,nconds)
+  for(i in 1:ntrials){
+    tmp<-which(uniqueConds==trials[i])
+    trialLenCond[i,tmp]<-dim(data[[i]])[1]
+    ntrialsCond[tmp]<-ntrialsCond[tmp]+1
+  }
+  minTrialLen<-min(trialLenCond)
+  nfeatures<-minTrialLen*nvoxels
+  nexamples<-ntrials
+  examples<-matrix(0,nexamples,nfeatures)
+  labels<-trials
+  expInfo<-list()
+  expInfo$experiment<-""
+  expInfo$dataType<-""
+  expInfo$meta<-meta
+  expInfo$featureToIDM<-matrix(0,nfeatures,2)
+  ftoidm1<-matrix(rep(1:nvoxels,each=minTrialLen),nvoxels,)
+  ftoidm2<-matrix(rep(1:minTrialLen,each=nvoxels),nvoxels,minTrialLen)
+  expInfo$featureToIDM[,1]<-matrix(ftoidm1,nfeatures,1)
+  expInfo$featureToIDM[,2]<-matrix(ftoidm2,nfeatures,1)
+  for(i in 1:ntrials){
+    tmpdata<-data[[i]][1:minTrialLen,]
+    tmpdata<-matrix(t(tmpdata),nvoxels*minTrialLen,1)
+    examples[i,]<-t(tmpdata)
+  }
+  return(list(examples=examples,labels=labels,expInfo=expInfo))
+}
