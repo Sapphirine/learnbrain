@@ -1,0 +1,33 @@
+IDMinfomation<-function(info,data,meta,study){
+  ntrials<-length(data)
+  nvoxels<-dim(data[[1]])[2]
+  trialSequence<-info["cond",]
+  trialLengths<-info["len",]
+  taskTrials<-which(trialSequence>0)
+  taskTrialSequence<-trialSequence[taskTrials]
+  taskTrialLengths<-trialLengths[taskTrials]
+  conditions<-unique(taskTrialSequence)
+  nconds<-length(conditions)
+  conditionToTrial<-list()
+  minTrialLenCond<-matrix(,nconds,1)
+  nTrialsCond<-matrix(,nconds,1)
+  for(c in 1:nconds){
+    conditionNumber<-conditions[[c]]
+    conditionToTrial[[c]]<-which(trialSequence==conditionNumber)
+    minTrialLenCond[c]<-min(unlist(trialLengths[conditionToTrial[[c]]]))
+    nTrialsCond[c]<-length(conditionToTrial[[c]])
+  }
+  information<-list()
+  information$nTrials<-ntrials
+  information$nVoxels<-nvoxels
+  information$nConds<-nconds
+  information$minTrialLenCond<-minTrialLenCond
+  information$nTrialsCond<-nTrialsCond
+  information$trialSequence<-trialSequence
+  information$trialLengths<-trialLengths
+  information$taskTrials<-taskTrials
+  information$taskTrialSequence<-taskTrialSequence
+  information$taskTrialLengths<-taskTrialLengths
+  information$conditionToTrial<-conditionToTrial
+  return(information)
+}
