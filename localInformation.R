@@ -1,0 +1,11 @@
+localInformation<-function(study){
+  information<-list()
+  information$host<-""
+  information$dataplace<-""
+  information$codeplace<-""
+  information$subjects<-""
+  information$rois<-""
+  information$dimensions<-c(64,64,8)
+  information$nconds<-""
+  return(information)
+}
